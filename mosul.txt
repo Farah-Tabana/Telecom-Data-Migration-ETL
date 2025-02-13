@@ -1,0 +1,1283 @@
+select  "serial_number" ,"nai",t1.mac as "mac","product_class","tags","status","provisioned_at","activated_at","subscription_code",
+"subscription_expiry","full_name", "mobile_number","email","preferred_language","password","package code" As "package_code","Updated by" As "updated_by","Updated at" As "updated_at",
+"iqd","maxmize_points"
+ from (
+--------------------------------------------------------------------
+((
+----normal case
+(select distinct 
+case when t3.itm_model_code='SWU-9200' and  t1.icc like '0416U9200%' then 'IQFA'|| trim('F' from t1.icc) 
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '416U9200%')or(t1.icc like '416U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='BM632W' and  t1.icc like '416U9200%' then 'IQFA0'|| trim('F' from t1.icc)  
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '326U9200%')or (t1.icc like '326U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc like '0ILF0915U9200%' then 'IQFA0'||substr(trim('F' from t1.icc),1,4)
+     when t3.itm_model_code='MODEL: SWU-9200' and  t1.icc like 'IQFA0416U9200%' then trim('F' from t1.icc) 
+     when t1.icc like '00DXHKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DXHKC%' then trim('F' from t1.icc)
+     when t1.icc like '00DVIKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DVIKC%' then trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc ='0326U92000000270F' then 'IQFA'||substr(trim('F' from t1.icc),1,9)||'-'||substr(trim('F' from t1.icc),10,7)
+     when t3.itm_model_code='SWU-9200' and t1.icc ='0ILF0915U9200-0000002F' then 'IQFA'||substr(trim ('F' from t1.icc),5)
+     when t1.icc='8KA8WB1091700080F' then '8KA8WA1091700080'
+     when t1.icc='00DXNBC132801099F' then '00DXHKC132801099'
+     when t1.icc='1000000000000Y0PF' then '8KA8WA10C3000152'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='100000000000000PF' then '8KA8WA1151101465'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='1000000000000T0PF' then '8KA8WA1151101455'
+     when t1.icc='1000000000000O0PF' then '8KA8WA1151102047'
+     when t1.icc='1000000000000N0DF' then '8KA8WA1151101533'
+     when t1.icc='100000000000000EF' then '8KA8WA1151102806'
+     when t1.icc='100000000000000TF' then '8KA8WA1151101639'
+     when t1.icc='100000000000000UF' then '8KA8WA1151100310'
+     when t1.icc='100000000000000WF' then '8KA8WA1151100202'
+     when t1.icc='00DXNBC132801099F' then 'DXHKC132801099'
+     when t1.icc='100000000000000MF' then '8KA8WA1151101127'
+     when t1.icc='100000000000000HF' then '8KA8WA1151101261'
+     when t1.icc='100000000000000NF' then '8KA8WA1151102445'
+     when t1.icc='10000000000000TPF' then '8KA8WA1151101201'
+     When T1.Icc='IQFA1342U920-00002551F' Then 'IQFA1342U9200-00002551'
+     when t1.icc='A8WA1391709722F' then '8KA8WA1391709722'
+     else trim('F' from t1.icc)
+end as "serial_number"
+, concat(t1.imsi,'@fanoostelecom.net') "nai",
+substr(t1.imsi,1,2)||':'||substr(t1.imsi,3,2)||':'||substr(t1.imsi,5,2)||':'||substr(t1.imsi,7,2)||':'||substr(t1.imsi,9,2)||':'||substr(t1.imsi,11,2) "MAC", 
+case when t1.icc like '%U9200-%'  or  t1.icc = '0326U92000000270F' or t1.icc = '0ILF0915U9200-0000002F' or t1.icc ='IQFA1342U920-00002551F' then  'SWU-9200' 
+     when t1.icc like '%C300C-%' then 'SWC-300C'  
+     when   t1.icc like '00DVIKC%' or t1.icc like 'DVIKC%' then 'DV-360'
+     when  t1.icc like '00DXHKC%' or t1.icc like 'DXHKC%' or t1.icc in ('00DXNBC132801099F', '00DXNBC132801099F')then 'DX-350'
+     When  T1.Icc Like '8KA8WA%' Or 
+     t1.icc in ('8KA8WB1091700080F','1000000000000Y0PF','100000000000000QF','100000000000000PF','100000000000000QF','1000000000000T0PF','A8WA1391709722F',
+    '1000000000000O0PF','1000000000000N0DF','100000000000000EF','100000000000000TF','100000000000000UF','100000000000000WF', '100000000000000MF',
+    '100000000000000HF','100000000000000NF','10000000000000TPF','A8WA1391709336F' )   then  'BM632w'
+end "product_class",
+Case
+-----------mosul------
+---------normal cpe-------
+
+   When T5.Pack_Code In ('MOS04','MOS01','MOS04B','MOS11','PRMC1B','PRMC1','MOS01B','MOS03','MOS02','MOS05') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                 )
+               )  Then '["mosul","commercial","cpe"]'
+          
+------maxwin cpe--------
+ When T5.Pack_Code In ('SRECC') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                 )
+               )  Then '["mosul","commercial","cpe","maxwin"]'
+          
+
+---------normal mifi
+When T5.Pack_Code In ('MOSMI2','PRMM1B','MOSM1B','PRMM1','MOSMI1') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_MYFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_MYFI')
+                 )
+               ) Then '["mosul","commercial","mifi"]'
+               
+ ----------maxwin mifi
+ When T5.Pack_Code In ('SRECMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_MYFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_MYFI')
+                 )
+               ) Then '["mosul","commercial","mifi","maxwin"]'
+ 
+----normal fnf cpe                            
+               
+When T5.Pack_Code In ('MFFS','MFFB','MFFS01','MFFB01','MFFPR1','MFFPR','MFFPB')and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                 )
+               )and  imsi  not in  ('002107281CD4','002107281D84')Then '["fnf","mosul","cpe"]'
+               
+--------maxwin cpe
+When T5.Pack_Code In ('SRECC')and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                 )
+               )Then '["fnf","mosul","cpe","maxwin"]'
+               
+ -------normal fnf mifi                          
+ 
+When T5.Pack_Code In ('MFFMIP','MFFMI1','MFFMP1','MFFMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS_MIFI')
+                 )
+               )or imsi in ('002107281CD4','002107281D84') Then '["fnf","mosul","mifi"]'
+
+------maxwim fnf mifi
+
+When T5.Pack_Code In ('SRECMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS_MIFI')
+                 )
+               ) Then '["fnf","mosul","mifi","maxwin"]'
+               
+---test cpe-----
+When  T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                              Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                   Where Ssn_Item_Code In ('MOS_CPE_TST1','PRMC1_DEV_TST')
+                   )
+                  Union
+                  (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                               Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                   Where Inl_Item_Code In ('MOS_CPE_TST1','PRMC1_DEV_TST')
+                   )
+                  ) Or Imsi in ('34CDBED3E5B5','001FFB824505') Then '["mosul","test","cpe"]'
+               
+ -----test mifi------
+ When  T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                           Where Ssn_Item_Code In ('PRMM1_DEV_TST')
+                )
+                Union
+               (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('PRMM1_DEV_TST')
+                 )
+               ) Then '["mosul","test","mifi"]'
+               
+               
+               
+                 
+End "tags",
+
+
+case
+    when t4.status='ACTIVE'   then 'active'
+    When T4.Status In ('FULLY BARRED','TEMP. HOLD','PARTIALLY BARRED')   Then 'blocked'
+    when t4.status='PERM. DISCONNECTED'   then 'canceled'
+else 'provisioned'
+end "status",
+to_char(trunc(t1.creation_date),'yyyy-mm-dd') "provisioned_at",
+To_Char(Trunc(T7.Creation_Date),'yyyy-mm-dd') "activated_at",
+
+Case When T5.Pack_Code In ('MOS01','MFFB','MFFB01','MOS01B','MOS03','MOS02','MFFPB') and imsi not in ('002107281D84')Then 'basic'
+     When T5.Pack_Code In ('MOS04','MOS04B','MFFS','MFFS01','MOS05') Then 'super'
+     When T5.Pack_Code In ('MOS11','PRMC1B','PRMC1','MFFPR1','MFFPR') and imsi not in ('002107281CD4','001FFB824205','001FFB824F73','34CDBED40169') Then 'premium_limited'
+     When (T5.Pack_Code In ('MOSMI2','MOSM1B','MFFMI1','MFFMI','MOSMI1')or imsi in ('002107281D84'))and imsi not in ('2107301083','00210728171C') Then 'mifi'
+     
+     when (t5.Pack_Code in ('MFFMIP','PRMM1B','MFFMP1','PRMM1')or imsi in ('002107281CD4'))and imsi not in ('00210728178D','2107245722') then 'mifi_premium_limited'
+     When T5.Pack_Code  ='SRECMI' Then 'maxwin_mifi'
+     When T5.Pack_Code  ='SRECC' Then 'maxwin_cpe'
+     When Imsi In ('001FFB824205','34CDBED04E84','001FFB7DCEFC','34CDBED4427F','BC76703088BF','001FFB824F73','34CDBED40169') Then 'basic_test'
+     When Imsi In ('2107301083','0021071B9CF6','0021071B9CF2','0021071B9C5B','0021071B7DFC','0021071B9C58','0021071B9C57','00210728178D','2107245722','00210728171C')  Then 'mifi_test'
+     
+end "subscription_code",
+to_char(trunc(t6.valid_stop),'yyyy-mm-dd') "subscription_expiry",
+t8.first_name ||' '|| t8.last_name  "full_name",
+
+  Case 
+  When T7.Mobile Like '+9647%' And Len(T7.Mobile)=17 Then '+964'||Substr(T7.Mobile,8)
+  When T7.Mobile Like '+9640%' And Len(T7.Mobile)=15 Then '+964'||Substr(T7.Mobile,6)
+  When T7.Mobile Like '9640%' And Len(T7.Mobile)=14 Then '+964'||Substr(T7.Mobile,5)
+  When T7.Mobile Like '964%' And Len(T7.Mobile)=13 Then '+964'||Substr(T7.Mobile,4)
+  When T7.Mobile Like '+9647%' And Len(T7.Mobile)=14 Then T7.Mobile
+  else '+9647480480480'
+  end
+ "mobile_number",
+case
+    when t7.email like '%@ggggg.com%' or t7.email like '%@yaho.com%' or t7.email like '%@YAHO.COM%' 
+    or t7.email like '%@ymail.com%'  or t7.email like '%@yahooo.com%' or
+     t7.email in ('555555@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'07701752812@YAHOO.COM',
+'07701717779N-ALSAHEL@YAHOO.COM',
+'07708296850@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'888@YAHOO.COM',
+'888@YAHOO.COM',
+'07706146885@YAHOO.COM',
+'000000@YAHOO.COM',
+'0003333@YAHOO.COM',
+'07708918201@YAHOO.COM',
+'2222222@YAHOO.COM',
+'07502374990@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'07701717779N-ALSAHEL@YAHOO.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'you@example.com')or t7.email like '%@asia.com%' or t7.email like '%@yahoo.cm%'   then ''
+ when t7.email like 'www.%' or t7.email like 'WWW.%' then substr(t7.email,5)
+
+    when  t7.email like '%@%'and  t7.email like '%.%' then t7.email 
+else ''
+end "email",
+CASE 
+    WHEN t5.Pack_Code IN ('DIY01', 'DIY02','DIY03','DIY04','MIFID2','MIFIDY',
+        'PRDIMI','DIFFB','DIFFS','DIFFPR','DIFFB','DIFFS','DIFFPR','DIFFMI','DFFMIP','PRDIL'
+         ,'MFFB','MFFS','PRMC1','PRMM1','MOS01','MOS03','MOS04','MOS05','MOS11','MOSMI1',
+         'MOSMI2','MFFPR','MFFMIP','MFFMI','MOS02','MOSM1B','MFFPB','MOS01B','MOS04B','PRMC1B'
+         ,'PRMM1B','MFFB01','MFFMI1','MFFMP1','MFFPR1','MFFS01',
+         'DUZ01','DUZ02','DUZ03','DUZ04','DUZMI1','DUZMI2',
+         'ESDZC1','PRDZMI','PRDUZ','ESDZC2','PDZMI1','PRDUZ1','DILEC1','DILEC2','DLMEC1','DLMEC2')and
+         T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                 )
+               ) THEN 'Arabic'
+ELSE 'Kurdish'
+end "preferred_language",
+case when t3.itm_model_code='SWU-9200' and  t1.icc like '0416U9200%' then 'IQFA'|| trim('F' from t1.icc) 
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '416U9200%')or(t1.icc like '416U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='BM632W' and  t1.icc like '416U9200%' then 'IQFA0'|| trim('F' from t1.icc)  
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '326U9200%')or (t1.icc like '326U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc like '0ILF0915U9200%' then 'IQFA0'||substr(trim('F' from t1.icc),1,4)
+     when t3.itm_model_code='MODEL: SWU-9200' and  t1.icc like 'IQFA0416U9200%' then trim('F' from t1.icc) 
+     when t1.icc like '00DXHKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DXHKC%' then trim('F' from t1.icc)
+     when t1.icc like '00DVIKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DVIKC%' then trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc ='0326U92000000270F' then 'IQFA'||substr(trim('F' from t1.icc),1,9)||'-'||substr(trim('F' from t1.icc),10,7)
+     when t3.itm_model_code='SWU-9200' and t1.icc ='0ILF0915U9200-0000002F' then 'IQFA'||substr(trim ('F' from t1.icc),5)
+     when t1.icc='8KA8WB1091700080F' then '8KA8WA1091700080'
+     when t1.icc='00DXNBC132801099F' then '00DXHKC132801099'
+     when t1.icc='1000000000000Y0PF' then '8KA8WA10C3000152'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='100000000000000PF' then '8KA8WA1151101465'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='1000000000000T0PF' then '8KA8WA1151101455'
+     when t1.icc='1000000000000O0PF' then '8KA8WA1151102047'
+     when t1.icc='1000000000000N0DF' then '8KA8WA1151101533'
+     when t1.icc='100000000000000EF' then '8KA8WA1151102806'
+     when t1.icc='100000000000000TF' then '8KA8WA1151101639'
+     when t1.icc='100000000000000UF' then '8KA8WA1151100310'
+     when t1.icc='100000000000000WF' then '8KA8WA1151100202'
+     when t1.icc='00DXNBC132801099F' then 'DXHKC132801099'
+     when t1.icc='100000000000000MF' then '8KA8WA1151101127'
+     when t1.icc='100000000000000HF' then '8KA8WA1151101261'
+     when t1.icc='100000000000000NF' then '8KA8WA1151102445'
+     when t1.icc='10000000000000TPF' then '8KA8WA1151101201'
+     When T1.Icc='IQFA1342U920-00002551F' Then 'IQFA1342U9200-00002551'
+     when t1.icc='A8WA1391709722F' then '8KA8WA1391709722'
+Else Trim('F' From T1.Icc)
+end "password",
+
+Case When T5.Pack_Code ='2DIL05' Then 'MAXNET Test Basic'
+     When T5.Pack_Code ='2KO-MI' Then 'MAXNET Test Mifi'
+     When T5.Pack_Code ='PRDZMI' Then 'Maxnet Mifi Premium'
+     
+   ELSE initcap(t9.name) 
+   END "package_name",
+Case 
+
+ -------mosul------
+     When T5.Pack_Code In ('MOS01','MOS01B','MOS03','MOS02') Then 'mos_basic'
+     When T5.Pack_Code In ('MOS04','MOS04B','MOS05') Then 'mos_super'   
+     When T5.Pack_Code In ('MOS11','PRMC1B','PRMC1')and imsi not in ('001FFB824205','001FFB824F73') Then 'mos_premium'  
+     When T5.Pack_Code In ('MOSMI2','MOSM1B','MOSMI1') and imsi not in ('002107301083','00210728171C') Then 'mos_mifi'
+     When T5.Pack_Code In ('PRMM1B','PRMM1') and imsi not in ('002107245722') Then 'mos_mifi_premium'
+     When T5.Pack_Code In ('MFFB','MFFB01','MFFPB') and imsi not in ('002107281D84') Then 'mos_fnf_basic'
+     When T5.Pack_Code In ('MFFS','MFFS01') Then 'mos_fnf_super'
+     When T5.Pack_Code In ('MFFPR1','MFFPR') and imsi not in ('002107281CD4','34CDBED40169') Then 'mos_fnf_premium'
+     When T5.Pack_Code In ('MFFMI1','MFFMI') or imsi in ('002107281D84') Then 'mos_fnf_mifi'
+     When (T5.Pack_Code In ('MFFMIP','MFFMP1') or imsi in('002107281CD4')) and imsi not in ('00210728178D')Then 'mos_fnf_mifi_premium'
+--------others 
+     When T5.Pack_Code  ='SRECMI' Then 'maxwin_mifi_pkg'
+     When T5.Pack_Code  ='SRECC' Then 'maxwin_cpe_pkg'
+
+     When Imsi In ('001FFB824205','001FFB824F73','34CDBED40169') Then 'basic_test_pkg'
+     When Imsi In ('002107245722','00210728171C','00210728178D','002107301083','0021072816DE')  Then 'mifi_test_pkg'
+     
+end "package code",
+t1.last_updated_by "Updated by",to_char(trunc(t1.last_update_date),'yyyy-mm-dd') "Updated at"
+from vu_simcards t1
+full outer join VU_UE_SALES_SERIAL_LINES t2 on (trim ('F' from t1.icc)=t2.ssn_serial_no)
+full outer join VU_ic_items t3 on(t3.itm_item_code=t2.ssn_item_code) 
+join vu_subscriptions t4 on (t1.icc=t4.icc_number)
+join Vu_Subs_Packages t5 on (t4.subs_keyvalue=t5.subs_keyvalue)
+join vu_subs_reserv_wallet t6 on (t6.subs_keyvalue=t4.subs_keyvalue)
+full outer join vu_web_customers t7 on (t7.mac=t1.imsi)
+join vu_customers t8 on (t4.cust_keyvalue=t8.cust_keyvalue)
+Join Vu_Packages T9 On (T5.Pack_Code=T9.Code)
+--join ABS_VIEW_OWNER.Vu_Ic_Inventory_Lines t10 on (t10.Inl_Item_Code=t3.itm_item_code)
+where t5.keyvalue=(select max(dd.keyvalue)from Vu_Subs_Packages dd where dd.subs_keyvalue=t5.subs_keyvalue )
+and t6.keyvalue=(select max(gg.keyvalue)from vu_subs_reserv_wallet gg where gg.subs_keyvalue=t6.subs_keyvalue)
+And Imsi In (
+--mosul
+
+(Select imsi
+From Vu_Ue_Sales_Serial_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Ssn_Serial_No)
+Where Ssn_Item_Code In 
+('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI',
+'PRMM1_DEV_TST','PRMC1_DEV_TST')
+
+)
+Union
+(Select imsi
+From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Inl_Serial_No)
+
+Where Inl_Item_Code In 
+('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI',
+'PRMM1_DEV_TST','PRMC1_DEV_TST'
+) ) )
+And Imsi Not In 
+---billing test
+('202BC1DFF7B6','202BC1DFF756','202BC1DFE44E','202BC1DFF7B6','BC767030E433','34CDBED16B85','001FFB823602')
+) 
+
+
+---------provisioned
+Union 
+
+(Select case 
+when t2.icc like '00DXHKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '00DVIKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '416U9200%' then 'IQFA0'|| trim('F' from t2.icc)
+
+else trim('F' from t2.icc)
+end "serial_number"
+
+,Concat(T2.Imsi,'@fanoostelecom.net') "nai",
+Substr(T2.Imsi,1,2)||':'||Substr(T2.Imsi,3,2)||':'||Substr(T2.Imsi,5,2)||':'||Substr(T2.Imsi,7,2)||':'||Substr(T2.Imsi,9,2)||':'||Substr(T2.Imsi,11,2) "MAC" ,
+case when t2.icc like '%U9200-%'  or  t2.icc = '0326U92000000270F' or t2.icc = '0ILF0915U9200-0000002F' or t2.icc ='IQFA1342U920-00002551F' then  'SWU-9200' 
+     when t2.icc like '%C300C-%' then 'SWC-300C'  
+     when t2.icc like '00DVIKC%' or t2.icc like 'DVIKC%' then 'DV-360'
+     when t2.icc like '00DXHKC%' or t2.icc like 'DXHKC%' or t2.icc in ('00DXNBC132801099F', '00DXNBC132801099F')then 'DX-350'
+     when t2.icc like '8KA8WA%' or 
+     t2.icc in ('8KA8WB1091700080F','1000000000000Y0PF','100000000000000QF','100000000000000PF','100000000000000QF','1000000000000T0PF',
+    '1000000000000O0PF','1000000000000N0DF','100000000000000EF','100000000000000TF','100000000000000UF','100000000000000WF', '100000000000000MF',
+    '100000000000000HF','100000000000000NF','10000000000000TPF' )   Then  'BM632w'
+End "product_class"
+,
+
+
+Case
+-----------mosul------
+---------normal cpe-------
+ When (T2.Icc Like '%C300C-%' Or T2.Icc Like 'DVIK%' or T2.Icc Like '8KA8WA%' or T2.Icc Like 'DXHKC%' or T2.Icc Like '00DXHKC%') and
+  Trim('F' From Icc_Number) In (Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code in ('MOS_CPE','MOS_CPE_GP','SWC_MOS'))  Then '["mosul","commercial","cpe"]'
+ 
+---normal mifi---------
+When  T2.Icc Like '%U9200-%'  And Trim('F' From Icc_Number) In
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('MOS_MYFI')) Then '["mosul","commercial","mifi"]'
+
+---fnf cpe
+
+ When (T2.Icc Like '%C300C-%' Or T2.Icc Like 'DVIK%' or T2.Icc Like '8KA8WA%' or T2.Icc Like 'DXHKC%') and
+  Trim('F' From Icc_Number) In (Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In ('FNF_MOS','MOS_FNF_GP'))  Then '["fnf","mosul","cpe"]'
+
+---fnf mifi
+When  T2.Icc Like '%U9200-%'  And Trim('F' From Icc_Number) In
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('FNF_MOS_MIFI')) Then '["fnf","mosul","mifi"]'
+
+---test
+
+When   Trim('F' From Icc_Number) In
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('MOS_CPE_TST1')) then '["mosul","test","cpe"]'
+
+
+End "tags",
+
+Case 
+When T1.Cust_Keyvalue=1 Then 'provisioned'
+End "status",
+
+To_Char(Trunc(T2.Creation_Date),'yyyy-mm-dd') "provisioned_at",'' As "activated_at",null As "subscription_code" ,null As "subscription_expiry",null As "full_name",null As "mobile_number",
+null as "email",
+case 
+when t2.imsi in 
+((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('ESDZC1_DEV_TST','PRDUZ_TST','SWC_DUZ','DUZ_CPE','DUZ_CPE_GP','DUZMI1','DUZMI2','PRDZMI','PDZMI1'
+                             ,'DIY02','DIY04','DIY01','DIY03','DILEC1','DILEC2','PRDIL','MIFIDY','MIFID2','PRDIMI','DLMEC1','DLMEC2','DIFFB','DIFFPR','DIFFS','DIFFMI','DFFMIP')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                 )
+               ) 
+
+then 'Arabic'
+else 'Kurdish'
+end "preferred_language"
+,case 
+when t2.icc like '00DXHKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '00DVIKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '416U9200%' then 'IQFA0'|| trim('F' from t2.icc)
+
+else trim('F' from t2.icc)
+End  "password",
+null as "package_name",null as "package code",t2.last_updated_by "updated by",to_char(trunc(t2.last_update_date),'yyyy-mm-dd') "updated at"
+From Vu_Subscriptions T1 
+join Vu_Simcards t2 on (T1.Icc_Number=t2.icc) 
+Where Cust_Keyvalue=1 And Trim('F' From Icc_Number) In (
+Select inl_serial_no From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In 
+('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST')
+)
+and  Imsi Not In 
+---billing test
+('202BC1DFF7B6','202BC1DFF756','202BC1DFE44E','202BC1DFF7B6','BC767030E433','001FFB823602')
+) 
+
+--double subs_keyvalue and i take the max one which is active
+Union 
+(select * from (
+(select distinct 
+case when t3.itm_model_code='SWU-9200' and  t1.icc like '0416U9200%' then 'IQFA'|| trim('F' from t1.icc) 
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '416U9200%')or(t1.icc like '416U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='BM632W' and  t1.icc like '416U9200%' then 'IQFA0'|| trim('F' from t1.icc)  
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '326U9200%')or (t1.icc like '326U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc like '0ILF0915U9200%' then 'IQFA0'||substr(trim('F' from t1.icc),1,4)
+     when t3.itm_model_code='MODEL: SWU-9200' and  t1.icc like 'IQFA0416U9200%' then trim('F' from t1.icc) 
+     when t1.icc like '00DXHKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DXHKC%' then trim('F' from t1.icc)
+     when t1.icc like '00DVIKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DVIKC%' then trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc ='0326U92000000270F' then 'IQFA'||substr(trim('F' from t1.icc),1,9)||'-'||substr(trim('F' from t1.icc),10,7)
+     when t3.itm_model_code='SWU-9200' and t1.icc ='0ILF0915U9200-0000002F' then 'IQFA'||substr(trim ('F' from t1.icc),5)
+     when t1.icc='8KA8WB1091700080F' then '8KA8WA1091700080'
+     when t1.icc='00DXNBC132801099F' then '00DXHKC132801099'
+     when t1.icc='1000000000000Y0PF' then '8KA8WA10C3000152'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='100000000000000PF' then '8KA8WA1151101465'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='1000000000000T0PF' then '8KA8WA1151101455'
+     when t1.icc='1000000000000O0PF' then '8KA8WA1151102047'
+     when t1.icc='1000000000000N0DF' then '8KA8WA1151101533'
+     when t1.icc='100000000000000EF' then '8KA8WA1151102806'
+     when t1.icc='100000000000000TF' then '8KA8WA1151101639'
+     when t1.icc='100000000000000UF' then '8KA8WA1151100310'
+     when t1.icc='100000000000000WF' then '8KA8WA1151100202'
+     when t1.icc='00DXNBC132801099F' then 'DXHKC132801099'
+     when t1.icc='100000000000000MF' then '8KA8WA1151101127'
+     when t1.icc='100000000000000HF' then '8KA8WA1151101261'
+     when t1.icc='100000000000000NF' then '8KA8WA1151102445'
+     when t1.icc='10000000000000TPF' then '8KA8WA1151101201'
+     When T1.Icc='IQFA1342U920-00002551F' Then 'IQFA1342U9200-00002551'
+     when t1.icc='A8WA1391709722F' then '8KA8WA1391709722'
+     else trim('F' from t1.icc)
+end as "serial_number"
+, concat(t1.imsi,'@fanoostelecom.net') "nai",
+substr(t1.imsi,1,2)||':'||substr(t1.imsi,3,2)||':'||substr(t1.imsi,5,2)||':'||substr(t1.imsi,7,2)||':'||substr(t1.imsi,9,2)||':'||substr(t1.imsi,11,2) "MAC", 
+case when t1.icc like '%U9200-%'  or  t1.icc = '0326U92000000270F' or t1.icc = '0ILF0915U9200-0000002F' or t1.icc ='IQFA1342U920-00002551F' then  'SWU-9200' 
+     when t1.icc like '%C300C-%' then 'SWC-300C'  
+     when   t1.icc like '00DVIKC%' or t1.icc like 'DVIKC%' then 'DV-360'
+     when  t1.icc like '00DXHKC%' or t1.icc like 'DXHKC%' or t1.icc in ('00DXNBC132801099F', '00DXNBC132801099F')then 'DX-350'
+     When  T1.Icc Like '8KA8WA%' Or 
+     t1.icc in ('8KA8WB1091700080F','1000000000000Y0PF','100000000000000QF','100000000000000PF','100000000000000QF','1000000000000T0PF','A8WA1391709722F',
+    '1000000000000O0PF','1000000000000N0DF','100000000000000EF','100000000000000TF','100000000000000UF','100000000000000WF', '100000000000000MF',
+    '100000000000000HF','100000000000000NF','10000000000000TPF' )   then  'BM632w'
+end "product_class",
+Case
+-----------kirkuk------
+---------normal cpe-------
+When T5.Pack_Code In ('MOS04','MOS01','MOS04B','MOS11','PRMC1B','PRMC1','MOS01B','MOS03','MOS02','MOS05') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                 )
+               )  Then '["mosul","commercial","cpe"]'
+          
+------maxwin cpe--------
+ When T5.Pack_Code In ('SRECC') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')
+                 )
+               )  Then '["mosul","commercial","cpe","maxwin"]'
+          
+
+---------normal mifi
+When T5.Pack_Code In ('MOSMI2','PRMM1B','MOSM1B','PRMM1','MOSMI1') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_MYFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_MYFI')
+                 )
+               ) Then '["mosul","commercial","mifi"]'
+               
+ ----------maxwin mifi
+ When T5.Pack_Code In ('SRECMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_MYFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_MYFI')
+                 )
+               ) Then '["mosul","commercial","mifi","maxwin"]'
+ 
+----normal fnf cpe                            
+               
+When T5.Pack_Code In ('MFFS','MFFB','MFFS01','MFFB01','MFFPR1','MFFPR','MFFPB')and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                 )
+               )Then '["fnf","mosul","cpe"]'
+               
+--------maxwin cpe
+When T5.Pack_Code In ('SRECC')and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS','MOS_FNF_GP')
+                 )
+               )Then '["fnf","mosul","cpe","maxwin"]'
+               
+ -------normal fnf mifi                          
+ 
+When T5.Pack_Code In ('MFFMIP','MFFMI1','MFFMP1','MFFMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS_MIFI')
+                 )
+               ) Then '["fnf","mosul","mifi"]'
+
+------maxwim fnf mifi
+
+When T5.Pack_Code In ('SRECMI') and
+    T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('FNF_MOS_MIFI')
+                 )
+               ) Then '["fnf","mosul","mifi","maxwin"]'
+               
+---test cpe-----
+When  T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                              Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                   Where Ssn_Item_Code In ('MOS_CPE_TST1')
+                   )
+                  Union
+                  (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                               Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                   Where Inl_Item_Code In ('MOS_CPE_TST1')
+                   )
+                  ) Or Imsi in ('34CDBED3E5B5','001FFB824505') Then '["mosul","test","cpe"]'
+               
+ -----test mifi------
+ --When  T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+   --                          Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+     --                        Where Ssn_Item_Code In ('MIFI_FUT_K')
+       --         )
+         --       Union
+           --     (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+             --    Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+               --  Where Inl_Item_Code In ('MIFI_FUT_K')
+             --    )
+              -- ) Then '["mosul","test","mifi"]'
+               
+               
+               
+                 
+End "tags",
+
+case
+    when t4.status='ACTIVE'   then 'active'
+    When T4.Status In ('FULLY BARRED','TEMP. HOLD','PARTIALLY BARRED')   Then 'blocked'
+    when t4.status='PERM. DISCONNECTED'   then 'canceled'
+else 'provisioned'
+end "status",
+to_char(trunc(t1.creation_date),'yyyy-mm-dd') "provisioned_at",
+To_Char(Trunc(T7.Creation_Date),'yyyy-mm-dd') "activated_at",
+
+Case  When T5.Pack_Code In ('MOS01','MFFB','MFFB01','MOS01B','MOS03','MOS02','MFFPB') Then 'basic'
+     When T5.Pack_Code In ('MOS04','MOS04B','MFFS','MFFS01','MOS05') Then 'super'
+     When T5.Pack_Code In ('MOS11','PRMC1B','PRMC1','MFFPR1','MFFPR') Then 'premium_limited'
+     When (T5.Pack_Code In ('MOSMI2','MOSM1B','MFFMI1','MFFMI','MOSMI1') )and imsi not in ('2107301083','00210728171C')Then 'mifi'
+     
+     when t5.Pack_Code in ('MFFMIP','PRMM1B','MFFMP1','PRMM1') then 'mifi_premium_limited'
+     When T5.Pack_Code  ='SRECMI' Then 'maxwin_mifi'
+     When T5.Pack_Code  ='SRECC' Then 'maxwin_cpe'
+     --When Imsi In ('34CDBED04E84','001FFB7DCEFC','34CDBED4427F','BC76703088BF') Then 'basic_test'
+     When Imsi In ('2107301083','00210728171C')  Then 'mifi_test'
+     
+end "subscription_code",
+to_char(trunc(t6.valid_stop),'yyyy-mm-dd') "subscription_expiry",
+t8.first_name ||' '|| t8.last_name  "full_name",
+
+  Case 
+  When T7.Mobile Like '+9647%' And Len(T7.Mobile)=17 Then '+964'||Substr(T7.Mobile,8)
+  When T7.Mobile Like '+9640%' And Len(T7.Mobile)=15 Then '+964'||Substr(T7.Mobile,6)
+  When T7.Mobile Like '9640%' And Len(T7.Mobile)=14 Then '+964'||Substr(T7.Mobile,5)
+  When T7.Mobile Like '964%' And Len(T7.Mobile)=13 Then '+964'||Substr(T7.Mobile,4)
+  When T7.Mobile Like '+9647%' And Len(T7.Mobile)=14 Then T7.Mobile
+  else '+9647480480480'
+  end
+ "mobile_number",
+case
+    when t7.email like '%@ggggg.com%' or t7.email like '%@yaho.com%'or t7.email like '%@YAHO.COM%' 
+    or t7.email like '%@ymail.com%'  or t7.email like '%@yahooo.com%' or
+     t7.email in ('555555@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'07701752812@YAHOO.COM',
+'07701717779N-ALSAHEL@YAHOO.COM',
+'07708296850@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'888@YAHOO.COM',
+'888@YAHOO.COM',
+'07706146885@YAHOO.COM',
+'000000@YAHOO.COM',
+'0003333@YAHOO.COM',
+'07708918201@YAHOO.COM',
+'2222222@YAHOO.COM',
+'07502374990@YAHOO.COM',
+'100005646842072@YAHOO.COM',
+'07701717779N-ALSAHEL@YAHOO.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'ZEKO.2020.96@GMAIL.COM',
+'you@example.com')or t7.email like '%@asia.com%' or t7.email like '%@yahoo.cm%'   then ''
+ when t7.email like 'www.%' or t7.email like 'WWW.%' then substr(t7.email,5)
+
+    when  t7.email like '%@%'and  t7.email like '%.%' then t7.email 
+else ''
+end "email",
+CASE 
+    WHEN t5.Pack_Code IN ('DIY01', 'DIY02','DIY03','DIY04','MIFID2','MIFIDY',
+        'PRDIMI','DIFFB','DIFFS','DIFFPR','DIFFB','DIFFS','DIFFPR','DIFFMI','DFFMIP','PRDIL'
+         ,'MFFB','MFFS','PRMC1','PRMM1','MOS01','MOS03','MOS04','MOS05','MOS11','MOSMI1',
+         'MOSMI2','MFFPR','MFFMIP','MFFMI','MOS02','MOSM1B','MFFPB','MOS01B','MOS04B','PRMC1B'
+         ,'PRMM1B','MFFB01','MFFMI1','MFFMP1','MFFPR1','MFFS01',
+         'DUZ01','DUZ02','DUZ03','DUZ04','DUZMI1','DUZMI2',
+         'ESDZC1','PRDZMI','PRDUZ','ESDZC2','PDZMI1','PRDUZ1','DILEC1','DILEC2','DLMEC1','DLMEC2')and
+         T1.Imsi In ((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                 )
+               ) THEN 'Arabic'
+ELSE 'Kurdish'
+end "preferred_language",
+case when t3.itm_model_code='SWU-9200' and  t1.icc like '0416U9200%' then 'IQFA'|| trim('F' from t1.icc) 
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '416U9200%')or(t1.icc like '416U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='BM632W' and  t1.icc like '416U9200%' then 'IQFA0'|| trim('F' from t1.icc)  
+     when (t3.itm_model_code='SWU-9200' and  t1.icc like '326U9200%')or (t1.icc like '326U9200%') then 'IQFA0'|| trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc like '0ILF0915U9200%' then 'IQFA0'||substr(trim('F' from t1.icc),1,4)
+     when t3.itm_model_code='MODEL: SWU-9200' and  t1.icc like 'IQFA0416U9200%' then trim('F' from t1.icc) 
+     when t1.icc like '00DXHKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DXHKC%' then trim('F' from t1.icc)
+     when t1.icc like '00DVIKC%' then substr(trim('F' from t1.icc),3)
+     when t1.icc like 'DVIKC%' then trim('F' from t1.icc)
+     when t3.itm_model_code='SWU-9200' and  t1.icc ='0326U92000000270F' then 'IQFA'||substr(trim('F' from t1.icc),1,9)||'-'||substr(trim('F' from t1.icc),10,7)
+     when t3.itm_model_code='SWU-9200' and t1.icc ='0ILF0915U9200-0000002F' then 'IQFA'||substr(trim ('F' from t1.icc),5)
+     when t1.icc='8KA8WB1091700080F' then '8KA8WA1091700080'
+     when t1.icc='00DXNBC132801099F' then '00DXHKC132801099'
+     when t1.icc='1000000000000Y0PF' then '8KA8WA10C3000152'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='100000000000000PF' then '8KA8WA1151101465'
+     when t1.icc='100000000000000QF' then '8KA8WA1151102033'
+     when t1.icc='1000000000000T0PF' then '8KA8WA1151101455'
+     when t1.icc='1000000000000O0PF' then '8KA8WA1151102047'
+     when t1.icc='1000000000000N0DF' then '8KA8WA1151101533'
+     when t1.icc='100000000000000EF' then '8KA8WA1151102806'
+     when t1.icc='100000000000000TF' then '8KA8WA1151101639'
+     when t1.icc='100000000000000UF' then '8KA8WA1151100310'
+     when t1.icc='100000000000000WF' then '8KA8WA1151100202'
+     when t1.icc='00DXNBC132801099F' then 'DXHKC132801099'
+     when t1.icc='100000000000000MF' then '8KA8WA1151101127'
+     when t1.icc='100000000000000HF' then '8KA8WA1151101261'
+     when t1.icc='100000000000000NF' then '8KA8WA1151102445'
+     when t1.icc='10000000000000TPF' then '8KA8WA1151101201'
+     When T1.Icc='IQFA1342U920-00002551F' Then 'IQFA1342U9200-00002551'
+     when t1.icc='A8WA1391709722F' then '8KA8WA1391709722'
+Else Trim('F' From T1.Icc)
+end "password",
+
+Case When T5.Pack_Code ='2DIL05' Then 'MAXNET Test Basic'
+     When T5.Pack_Code ='2KO-MI' Then 'MAXNET Test Mifi'
+     When T5.Pack_Code ='PRDZMI' Then 'Maxnet Mifi Premium'
+     
+   ELSE initcap(t9.name) 
+   END "package_name",
+Case 
+
+ 
+ -------mosul------
+     When T5.Pack_Code In ('MOS01','MOS01B','MOS03','MOS02') Then 'mos_basic'
+     When T5.Pack_Code In ('MOS04','MOS04B','MOS05') Then 'mos_super'   
+     When T5.Pack_Code In ('MOS11','PRMC1B','PRMC1') Then 'mos_premium'  
+     When T5.Pack_Code In ('MOSMI2','MOSM1B','MOSMI1') Then 'mos_mifi'
+     When T5.Pack_Code In ('PRMM1B','PRMM1') Then 'mos_mifi_premium'
+     When T5.Pack_Code In ('MFFB','MFFB01','MFFPB') Then 'mos_fnf_basic'
+     When T5.Pack_Code In ('MFFS','MFFS01') Then 'mos_fnf_super'
+     When T5.Pack_Code In ('MFFPR1','MFFPR') Then 'mos_fnf_premium'
+     When T5.Pack_Code In ('MFFMI1','MFFMI') Then 'mos_fnf_mifi'
+     When T5.Pack_Code In ('MFFMIP','MFFMP1') Then 'mos_fnf_mifi_premium'
+--------others 
+     When T5.Pack_Code  ='SRECMI' Then 'maxwin_mifi_pkg'
+     When T5.Pack_Code  ='SRECC' Then 'maxwin_cpe_pkg'
+     When Imsi In ('34CDBED3E5B5','001FFB824505') Then 'basic_test_pkg'
+     When Imsi In ('0021072816DE')  Then 'mifi_test_pkg'
+     
+end "package code",
+t1.last_updated_by "Updated by",to_char(trunc(t1.last_update_date),'yyyy-mm-dd') "Updated at"
+from vu_simcards t1
+full outer join VU_UE_SALES_SERIAL_LINES t2 on (trim ('F' from t1.icc)=t2.ssn_serial_no)
+full outer join VU_ic_items t3 on(t3.itm_item_code=t2.ssn_item_code) 
+join vu_subscriptions t4 on (t1.icc=t4.icc_number)
+join Vu_Subs_Packages t5 on (t4.subs_keyvalue=t5.subs_keyvalue)
+join vu_subs_reserv_wallet t6 on (t6.subs_keyvalue=t4.subs_keyvalue)
+full outer join vu_web_customers t7 on (t7.mac=t1.imsi)
+join vu_customers t8 on (t4.cust_keyvalue=t8.cust_keyvalue)
+Join Vu_Packages T9 On (T5.Pack_Code=T9.Code)
+--join ABS_VIEW_OWNER.Vu_Ic_Inventory_Lines t10 on (t10.Inl_Item_Code=t3.itm_item_code)
+where t5.keyvalue=(select max(dd.keyvalue)from Vu_Subs_Packages dd where dd.subs_keyvalue=t5.subs_keyvalue )
+and t6.keyvalue=(select max(gg.keyvalue)from vu_subs_reserv_wallet gg where gg.subs_keyvalue=t6.subs_keyvalue)
+And Imsi In (
+--kirkuk
+
+(Select imsi
+From Vu_Ue_Sales_Serial_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Ssn_Serial_No)
+Where Ssn_Item_Code In 
+('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST')
+
+)
+Union
+(Select imsi
+From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Inl_Serial_No)
+
+Where Inl_Item_Code In 
+('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST')
+
+)
+)And  Imsi  In (--double subs_keyvalue
+'34CDBED171B8','34CDBED16B85') and imsi not in ('001FFB823602') 
+
+) )T1 Where (T1.Mac In ('34:CD:BE:D1:71:B8')And T1."status" ='canceled')
+Or (T1.Mac In ('34:CD:BE:D1:6B:85')And T1."status" ='active'))
+-----in the middle
+union
+( select distinct  case 
+when t2.icc like '00DXHKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '00DVIKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '416U9200%' then 'IQFA0'|| trim('F' from t2.icc)
+
+else trim('F' from t2.icc)
+end "serial_number",Concat(T2.Imsi,'@fanoostelecom.net') "nai",
+Substr(T2.Imsi,1,2)||':'||Substr(T2.Imsi,3,2)||':'||Substr(T2.Imsi,5,2)||':'||Substr(T2.Imsi,7,2)||':'||Substr(T2.Imsi,9,2)||':'||Substr(T2.Imsi,11,2) "MAC" ,
+case when t2.icc like '%U9200-%'  or  t2.icc = '0326U92000000270F' or t2.icc = '0ILF0915U9200-0000002F' or t2.icc ='IQFA1342U920-00002551F' then  'SWU-9200' 
+     when t2.icc like '%C300C-%' then 'SWC-300C'  
+     when t2.icc like '00DVIKC%' or t2.icc like 'DVIKC%' then 'DV-360'
+     when t2.icc like '00DXHKC%' or t2.icc like 'DXHKC%' or t2.icc in ('00DXNBC132801099F', '00DXNBC132801099F')then 'DX-350'
+     when t2.icc like '8KA8WA%' or 
+     t2.icc in ('8KA8WB1091700080F','1000000000000Y0PF','100000000000000QF','100000000000000PF','100000000000000QF','1000000000000T0PF',
+    '1000000000000O0PF','1000000000000N0DF','100000000000000EF','100000000000000TF','100000000000000UF','100000000000000WF', '100000000000000MF',
+    '100000000000000HF','100000000000000NF','10000000000000TPF' )   Then  'BM632w'
+End "product_class",
+
+Case
+--------kirkuk
+               
+When (T2.Icc Like '%C300C-%' Or T2.Icc Like 'DVIK%' Or T2.Icc Like '8KA8WA%' or  T2.Icc Like '%00DVIKC%' or T2.Icc Like '00DXHKC%' or T2.Icc Like 'DXHKC%') 
+And Trim('F' From Icc_Number) In (
+(Select inl_serial_no From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In
+('MOS_CPE','MOS_CPE_GP','SWC_MOS'))
+Union 
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where Ssn_Serial_No In ('MOS_CPE','MOS_CPE_GP','SWC_MOS')))
+or imsi in ('001FFB827961','001FFB81737A','001FFB82359C','001FFB8235B4','001FFB8235D2','001FFB8235F3','001FFB823602','001FFB8240BB','0021072DF869','0021072DF86B',
+'34CDBED051C4','34CDBED12B77') Then '["mosul","commercial","cpe"]'
+
+
+When  T2.Icc Like '%U9200-%'  And Trim('F' From Icc_Number) In(
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('MOS_MYFI'))
+Union 
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where Ssn_Serial_No In ('MOS_MYFI'))) 
+or imsi in('0021072455C1' ,'0021072455DA','0021072455CD','0021072455D1','0021072455CF','0021072455D0','002107244840','002107244B3C','002107244FE6','002107245252') Then '["mosul","commercial","mifi"]'
+
+When (T2.Icc Like '%C300C-%' Or T2.Icc Like 'DVIK%' or T2.Icc Like '8KA8WA%') 
+And Trim('F' From Icc_Number) In (
+(Select inl_serial_no From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In
+('FNF_MOS','MOS_FNF_GP'))
+Union
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where Ssn_Serial_No In ('FNF_MOS','MOS_FNF_GP')) )  Then '["fnf","mosul","cpe"]'
+
+When  T2.Icc Like '%U9200-%'  And Trim('F' From Icc_Number) In(
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('FNF_MOS_MIFI'))
+Union
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where Ssn_Serial_No In ('FNF_MOS_MIFI'))) Then '["fnf","mosul","mifi"]'
+
+When  T2.Icc Like '%00DVIKC%'  And Trim('F' From Icc_Number) In(
+(Select Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In('MOS_CPE_TST1'))
+Union
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where Ssn_Serial_No In ('MOS_CPE_TST1'))) Then '["mosul","test","cpe"]'
+
+End "tags",
+
+'provisioned' "status",
+To_Char(Trunc(T2.Creation_Date),'yyyy-mm-dd') "provisioned_at",'' As "activated_at",null As "subscription_code" ,null As "subscription_expiry",null As "full_name",null As "mobile_number",
+null as "email",
+
+case 
+when t2.imsi in 
+((Select Imsi From Vu_Ue_Sales_Serial_Lines T1
+                             Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Ssn_Serial_No)
+                             Where Ssn_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                )
+                Union
+                (Select Imsi From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+                 Join Vu_Simcards T2 On (Trim('F' From T2.Icc)=T1.Inl_Serial_No)
+                 Where Inl_Item_Code In ('MOS_CPE_FUT','MOS_CPE','MOS_CPE_GP','FNF_MOS','MOS_FNF_GP','SWC_MOS','MOS_CPE_TST1','MOS_MYFI','FNF_MOS_MIFI')
+                 )
+               ) 
+
+then 'Arabic'
+else 'Kurdish'
+end "preferred_language"
+, case 
+when t2.icc like '00DXHKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '00DVIKC%' then substr(trim('F' from t2.icc),3)
+when t2.icc like '416U9200%' then 'IQFA0'|| trim('F' from t2.icc)
+
+else trim('F' from t2.icc)
+end "password"
+,null as "package_name",null as "package code",
+t2.last_updated_by "updated by",to_char(trunc(t2.last_update_date),'yyyy-mm-dd') "updated at"
+From Vu_Subscriptions T1 Join Vu_Simcards T2 On (T1.Icc_Number=T2.Icc)
+where Trim('F' From Icc_Number) In (
+(Select inl_serial_no From Abs_View_Owner.Vu_Ic_Inventory_Lines 
+Where Inl_Item_Code In (
+'MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST'
+))
+union 
+(Select Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines 
+Where ssn_item_code In (
+'MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST'))
+)
+And  Imsi In 
+('001FFB827961',
+'001FFB7DC690',
+'001FFB82A2BF',
+'001FFB82732B',
+'0021072E0443',
+'0021072E051B',
+'0021072455C1',
+'0021072455CD',
+'0021072455CF',
+'0021072455D0',
+'0021072455D1',
+'0021072455DA',
+'0021072E07BB',
+'001FFB8248EC',
+'001FFB8249CA',
+'00210726C29F',
+'001FFB8291A0',
+'001FFB82A565',
+'0021073018A0',
+'0021073025F8',
+'00210730101D',
+'002107301691',
+'0021072E0269',
+'0021072DF631',
+'002107245252',
+
+'001FFB81737A',
+'001FFB82359C',
+'001FFB8235B4',
+'001FFB8235D2',
+'001FFB8235F3',
+'001FFB823602',
+'001FFB8240BB',
+'002107244840',
+'002107244B3C',
+'002107244FE6',
+'002107245252',
+'0021072DF869',
+'0021072DF86B',
+'34CDBED051C4',
+'34CDBED12B77',
+'001FFB823602'
+)
+)
+)))t1
+
+
+----walet
+------------------------------------------------------------------------------------
+
+Full Outer Join 
+((select distinct substr(imsi,1,2)||':'||substr(imsi,3,2)||':'||substr(imsi,5,2)||':'||substr(imsi,7,2)||':'||substr(imsi,9,2)||':'||substr(imsi,11,2) "MAC", 
+max (ff)
+as "iqd" ,null as"maxmize_points" from (
+with aa as 
+(select distinct  t1.cust_keyvalue,t1.subs_keyvalue,t2.imsi,t2.icc ,t3.wallet_amount ,t3.last_updated,t3.last_updated_date 
+from vu_subscriptions t1 
+join vu_simcards t2 on (t1.icc_number=t2.icc)
+join vu_cust_wallet t3 on  (t1.cust_keyvalue=t3.cust_keyvalue)
+order by t1.cust_keyvalue)  ,
+bb as (select distinct  t1.cust_keyvalue,t1.subs_keyvalue,t2.imsi,t2.icc ,t3.wallet_amount ,t3.last_updated,t3.last_updated_date
+from vu_subscriptions t1 
+join vu_simcards t2 on (t1.icc_number=t2.icc)
+join vu_cust_wallet t3 on  (t1.cust_keyvalue=t3.cust_keyvalue)
+Order By T1.Cust_Keyvalue)
+
+select distinct  aa.cust_keyvalue,aa.subs_keyvalue,aa.imsi,aa.icc ,aa.wallet_amount,
+case when aa.cust_keyvalue <>1  then aa.wallet_amount/count(aa.cust_keyvalue)
+else 0
+end ff,
+aa.last_updated,aa.last_updated_date
+from aa join bb on(aa.cust_keyvalue=bb.cust_keyvalue)
+group by aa.cust_keyvalue,aa.subs_keyvalue,aa.imsi,aa.icc ,aa.wallet_amount,aa.last_updated,aa.last_updated_date
+order by aa.cust_keyvalue)
+Where Imsi In (
+--mosul
+
+(Select imsi
+From Vu_Ue_Sales_Serial_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Ssn_Serial_No)
+Where Ssn_Item_Code In (
+'MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST')
+)
+Union
+(Select imsi
+From Abs_View_Owner.Vu_Ic_Inventory_Lines T1
+join Vu_Simcards t2 on (trim('F' from t2.icc)=t1.Inl_Serial_No)
+where inl_item_code in ('MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI','PRMM1_DEV_TST','PRMC1_DEV_TST')
+))And Imsi Not In 
+---billing test
+('202BC1DFF7B6','202BC1DFF756','202BC1DFE44E','202BC1DFF7B6','BC767030E433','34CDBED16B85','001FFB823602',
+--coz it is under
+'001FFB8278E9',
+'001FFB81737A',
+'001FFB82359C',
+'001FFB8235B4',
+'001FFB8235D2',
+'001FFB8235F3',
+'001FFB823602',
+'001FFB8240BB',
+'002107244840',
+'002107244B3C',
+'002107244FE6',
+'002107245252',
+'0021072DF869',
+'0021072DF86B',
+'34CDBED051C4',
+'34CDBED12B77',
+'001FFB8286B4',
+'00210726B7CD',
+'001FFB826647',
+'001FFB82367A',
+'001FFB82C2C0',
+'001FFB823602',
+'001FFB823662',
+'001FFB826320',
+'001FFB82B360',
+'002107281B83',
+'34CDBED171B8',
+'0021072E05DD',
+'0021072E057B',
+'34CDBED05628',
+'34CDBED13921','0021073025FC','001FFB8291A0'
+)
+Group By 
+Substr(Imsi,1,2)||':'||Substr(Imsi,3,2)||':'||Substr(Imsi,5,2)||':'||Substr(Imsi,7,2)||':'||Substr(Imsi,9,2)||':'||Substr(Imsi,11,2))
+--error in wallet section
+union
+(Select Distinct Substr(Imsi,1,2)||':'||Substr(Imsi,3,2)||':'||Substr(Imsi,5,2)||':'||Substr(Imsi,7,2)||':'||Substr(Imsi,9,2)||':'||Substr(Imsi,11,2) "MAC", 
+case when imsi  In (
+--mosul
+'001FFB8248EC',
+'001FFB8249CA',
+'001FFB82732B',
+'001FFB827961',
+'001FFB82A2BF',
+'001FFB82A565',
+'001FFB7DC690',
+'0021072455C1',
+'0021072455CD',
+'0021072455CF',
+'0021072455D0',
+'0021072455D1',
+'0021072455DA',
+'00210726C29F',
+'0021072DF631',
+'0021072E0269',
+'0021072E0443',
+'0021072E051B',
+'0021072E07BB',
+'002107301691',
+'0021073018A0',
+'0021073025F8',
+'001FFB8278E9',
+
+'001FFB81737A',
+'001FFB82359C',
+'001FFB8235B4',
+'001FFB8235D2',
+'001FFB8235F3',
+'001FFB823602',
+'001FFB8240BB',
+'002107244840',
+'002107244B3C',
+'002107244FE6',
+'002107245252',
+'0021072DF869',
+'0021072DF86B',
+'34CDBED051C4',
+'34CDBED12B77',
+'001FFB8291A0',
+'001FFB823602'
+
+
+)Then 0 
+when imsi ='34CDBED16B85'then 2000
+when imsi ='00210730101D'then 45000
+
+End "iqd" ,Null As"maxmize_points" From Vu_Simcards T2
+where imsi in ('001FFB8248EC',
+'001FFB8249CA',
+'001FFB82732B',
+'001FFB827961',
+'001FFB82A2BF',
+'001FFB82A565',
+'001FFB7DC690',
+'0021072455C1',
+'0021072455CD',
+'0021072455CF',
+'0021072455D0',
+'0021072455D1',
+'0021072455DA',
+'00210726C29F',
+'0021072DF631',
+'0021072E0269',
+'0021072E0443',
+'0021072E051B',
+'0021072E07BB',
+'002107301691',
+'0021073018A0',
+'0021073025F8',
+'001FFB8278E9',
+
+'001FFB81737A',
+'001FFB82359C',
+'001FFB8235B4',
+'001FFB8235D2',
+'001FFB8235F3',
+'001FFB823602',
+'001FFB8240BB',
+'002107244840',
+'002107244B3C',
+'002107244FE6',
+'002107245252',
+'0021072DF869',
+'0021072DF86B',
+'34CDBED051C4',
+'34CDBED12B77','001FFB8291A0','001FFB823602','34CDBED16B85','00210730101D'
+
+)
+)
+
+--------------------------------------------------------------
+Union 
+(Select Distinct  Substr(Imsi,1,2)||':'||Substr(Imsi,3,2)||':'||Substr(Imsi,5,2)||':'||Substr(Imsi,7,2)||':'||Substr(Imsi,9,2)||':'||Substr(Imsi,11,2) "MAC",
+t3.wallet_amount "iqd",Null As"maxmize_points"
+from vu_subscriptions t1 
+join vu_simcards t2 on (t1.icc_number=t2.icc)
+Join Vu_Cust_Wallet T3 On  (T1.Cust_Keyvalue=T3.Cust_Keyvalue)
+where imsi in ('001FFB8286B4',
+'00210726B7CD',
+'001FFB826647',
+'001FFB82367A',
+'001FFB82C2C0',
+
+'001FFB823662',
+'001FFB826320',
+'001FFB82B360',
+'002107281B83',
+'34CDBED171B8',
+'0021072E05DD',
+'0021072E057B',
+'34CDBED05628',
+'34CDBED13921','0021073025FC')))
+
+t2
+On (T2.Mac=T1.Mac)
+Where "nai" Is Not Null
+
+
+
+

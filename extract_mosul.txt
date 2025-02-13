@@ -1,0 +1,34 @@
+Select T4.Subs_Keyvalue  ,Imsi , Icc,t8.Ssn_Item_Code ,t8.ssn_serial_no,T4.Pack_code
+From Vu_Subscriptions T2  
+Join Vu_Simcards T3 On (T2.Icc_Number=T3.Icc) 
+Join Vu_Subs_Packages T4 On (T2.Subs_Keyvalue=T4.Subs_Keyvalue)
+Join((Select Ssn_Item_Code ,Ssn_Serial_No From Vu_Ue_Sales_Serial_Lines Where Ssn_Item_Code In (
+'MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI'
+)
+)
+Union
+(Select Inl_Item_Code , Inl_Serial_No From Abs_View_Owner.Vu_Ic_Inventory_Lines Where Inl_Item_Code In (
+'MOS_CPE_FUT',
+'MOS_CPE',
+'MOS_CPE_GP',
+'FNF_MOS',
+'MOS_FNF_GP',
+'SWC_MOS',
+'MOS_CPE_TST1',
+'MOS_MYFI',
+'FNF_MOS_MIFI')
+))T8 On(T8.Ssn_Serial_No=Trim('F' From T3.Icc)) 
+Where 
+
+T4.Keyvalue=(Select Max(Dd.Keyvalue)From Vu_Subs_Packages Dd Where Dd.Subs_Keyvalue=T4.Subs_Keyvalue)
+
+
+
